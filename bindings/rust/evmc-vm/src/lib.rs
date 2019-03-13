@@ -8,6 +8,8 @@
 //! Have a look at evmc-declare to declare an EVMC compatible VM.
 //! This crate documents how to use certain data types.
 
+#![feature(type_alias_enum_variants)]
+
 mod container;
 mod types;
 
