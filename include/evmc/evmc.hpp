@@ -127,6 +127,21 @@ public:
         return result{m_instance->execute(m_instance, &ctx, rev, &msg, code, code_size)};
     }
 
+    /// Executes code without the Host context.
+    ///
+    /// The same as
+    /// execute(evmc_context&, evmc_revision, const evmc_message&, const uint8_t*, size_t),
+    /// but without providing the Host context.
+    /// This method is for experimental precompiles support where execution is guaranteed
+    /// not to require any Host access.
+    result execute(evmc_revision rev,
+                   const evmc_message& msg,
+                   const uint8_t* code,
+                   size_t code_size) noexcept
+    {
+        return result{m_instance->execute(m_instance, nullptr, rev, &msg, code, code_size)};
+    }
+
 private:
     evmc_instance* const m_instance = nullptr;
 };
