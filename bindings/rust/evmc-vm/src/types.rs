@@ -10,7 +10,13 @@ pub type Bytes32 = ffi::evmc_bytes32;
 pub type Uint256 = ffi::evmc_uint256be;
 
 /// EVMC message (call) kind.
-pub type MessageKind = ffi::evmc_call_kind;
+#[derive(Debug, PartialEq)]
+pub enum MessageKind {
+  Call,
+  CallCode,
+  DelegateCall,
+  Create,
+}
 
 /// EVMC message (call) flags.
 pub type MessageFlags = ffi::evmc_flags;
@@ -23,6 +29,14 @@ pub type StorageStatus = ffi::evmc_storage_status;
 
 /// EVMC VM revision.
 pub type Revision = ffi::evmc_revision;
+
+impl From<ffi::evmc_call_kind> for MessageKind {
+    fn from(kind: ffi::evmc_call_kind) -> Self {
+        match kind {
+            EVM_CALL => MessageKind::Call,
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -52,16 +66,16 @@ mod tests {
 
     #[test]
     fn message_kind() {
-        assert_eq!(MessageKind::EVMC_CALL, ffi::evmc_call_kind::EVMC_CALL);
+        assert_eq!(MessageKind::Call, ffi::evmc_call_kind::EVMC_CALL);
         assert_eq!(
-            MessageKind::EVMC_CALLCODE,
+            MessageKind::CallCode,
             ffi::evmc_call_kind::EVMC_CALLCODE
         );
         assert_eq!(
-            MessageKind::EVMC_DELEGATECALL,
+            MessageKind::DelegateCall,
             ffi::evmc_call_kind::EVMC_DELEGATECALL
         );
-        assert_eq!(MessageKind::EVMC_CREATE, ffi::evmc_call_kind::EVMC_CREATE);
+        assert_eq!(MessageKind::Create, ffi::evmc_call_kind::EVMC_CREATE);
     }
 
     #[test]
