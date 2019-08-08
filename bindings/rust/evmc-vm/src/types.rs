@@ -12,10 +12,10 @@ pub type Uint256 = ffi::evmc_uint256be;
 /// EVMC message (call) kind.
 #[derive(Debug, PartialEq)]
 pub enum MessageKind {
-  Call,
-  CallCode,
-  DelegateCall,
-  Create,
+    Call,
+    CallCode,
+    DelegateCall,
+    Create,
 }
 
 /// EVMC message (call) flags.
@@ -67,10 +67,7 @@ mod tests {
     #[test]
     fn message_kind() {
         assert_eq!(MessageKind::Call, ffi::evmc_call_kind::EVMC_CALL);
-        assert_eq!(
-            MessageKind::CallCode,
-            ffi::evmc_call_kind::EVMC_CALLCODE
-        );
+        assert_eq!(MessageKind::CallCode, ffi::evmc_call_kind::EVMC_CALLCODE);
         assert_eq!(
             MessageKind::DelegateCall,
             ffi::evmc_call_kind::EVMC_DELEGATECALL
