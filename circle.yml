@@ -160,8 +160,12 @@ jobs:
       shell: bash.exe
     steps:
       - run:
-          name: "Install CMake"
-          command: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+          name: "Install system dependencies"
+          command: |
+            export PATH="$PATH:/c/Python27:/c/Python27/Scripts"
+            choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' &
+            pip install requests
+            wait
       - checkout
       - run:
           name: "Configure"
@@ -169,7 +173,7 @@ jobs:
           command: |
             ls -l 'C:/Program Files/CMake'
             export PATH="$PATH:/c/Program Files/CMake/bin"
-            cmake ../project -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX=~/install -DEVMC_TESTING=ON $CMAKE_OPTIONS
+            cmake ../project -G "Visual Studio 16 2019" -DCMAKE_INSTALL_PREFIX=~/install -DEVMC_TESTING=ON $CMAKE_OPTIONS
       - run:
           name: "Build"
           command: cmake --build ~/build
