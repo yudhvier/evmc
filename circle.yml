@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  win: circleci/windows@1.0.0
+
 executors:
   linux:
     docker:
@@ -151,6 +154,26 @@ jobs:
           command: sudo apt -q update && sudo apt -qy install g++-multilib
       - build_and_test
 
+  build-vs2019:
+    executor:
+      name: win/vs2019
+      shell: bash.exe
+    steps:
+      - run:
+          name: "Install CMake"
+          command: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+      - checkout
+      - run:
+          name: "Configure"
+          working_directory: ~/build
+          command: |
+            ls -l 'C:/Program Files/CMake'
+            export PATH="$PATH:/c/Program Files/CMake/bin"
+            cmake ../project -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX=~/install -DEVMC_TESTING=ON $CMAKE_OPTIONS
+      - run:
+          name: "Build"
+          command: cmake --build ~/build
+
   bindings-go-latest:
     docker:
       - image: circleci/golang
@@ -239,24 +262,25 @@ workflows:
   version: 2
   evmc:
     jobs:
-      - lint
-      - build-cxx17
-      - build-cxx14-asan
-      - build-gcc6
-      - build-clang38
-      - build-32bit
-      - bindings-go-latest
-      - bindings-go-min
-      - bindings-rust:
-          requires:
-            - build-cxx17
-      - bindings-rust-asan-combined:
-          requires:
-            - build-cxx14-asan
-      - upload-docs:
-          requires:
-            - lint
-          filters:
-            branches:
-              only:
-                - master
+      - build-vs2019
+#      - lint
+#      - build-cxx17
+#      - build-cxx14-asan
+#      - build-gcc6
+#      - build-clang38
+#      - build-32bit
+#      - bindings-go-latest
+#      - bindings-go-min
+#      - bindings-rust:
+#          requires:
+#            - build-cxx17
+#      - bindings-rust-asan-combined:
+#          requires:
+#            - build-cxx14-asan
+#      - upload-docs:
+#          requires:
+#            - lint
+#          filters:
+#            branches:
+#              only:
+#                - master
