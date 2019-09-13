@@ -46,16 +46,16 @@ protected:
         recorded_options.clear();
     }
 
-    void setup(const char* path, const char* symbol, evmc_create_fn fn) noexcept
+    static void setup(const char* path, const char* symbol, evmc_create_fn fn) noexcept
     {
         evmc_test_library_path = path;
         evmc_test_library_symbol = symbol;
         evmc_test_create_fn = fn;
     }
 
-    static void destroy(evmc_instance*) noexcept { ++destroy_count; }
+    static void destroy(evmc_instance* /*unused*/) noexcept { ++destroy_count; }
 
-    static evmc_set_option_result set_option(evmc_instance*,
+    static evmc_set_option_result set_option(evmc_instance* /*unused*/,
                                              const char* name,
                                              const char* value) noexcept
     {
@@ -108,12 +108,12 @@ std::vector<std::pair<std::string, std::string>> loader::recorded_options;
 
 static evmc_instance* create_aaa()
 {
-    return (evmc_instance*)0xaaa;
+    return reinterpret_cast<evmc_instance*>(0xaaa);
 }
 
 static evmc_instance* create_eee_bbb()
 {
-    return (evmc_instance*)0xeeebbb;
+    return reinterpret_cast<evmc_instance*>(0xeeebbb);
 }
 
 static evmc_instance* create_failure()

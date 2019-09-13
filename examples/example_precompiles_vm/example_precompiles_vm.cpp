@@ -48,12 +48,12 @@ static evmc_result not_implemented()
     return result;
 }
 
-static evmc_result execute(evmc_instance*,
-                           evmc_context*,
+static evmc_result execute(evmc_instance* /*unused*/,
+                           evmc_context* /*unused*/,
                            enum evmc_revision rev,
                            const evmc_message* msg,
-                           const uint8_t*,
-                           size_t)
+                           const uint8_t* /*unused*/,
+                           size_t /*unused*/)
 {
     // The EIP-1352 (https://eips.ethereum.org/EIPS/eip-1352) defines
     // the range 0 - 0xffff (2 bytes) of addresses reserved for precompiled contracts.
@@ -117,9 +117,9 @@ extern "C" EVMC_EXPORT evmc_instance* evmc_create_example_precompiles_vm()
         EVMC_ABI_VERSION,
         "example_precompiles_vm",
         PROJECT_VERSION,
-        [](evmc_instance*) {},
+        [](evmc_instance* /*unused*/) {},
         execute,
-        [](evmc_instance*) { return evmc_capabilities_flagset{EVMC_CAPABILITY_PRECOMPILES}; },
+        [](evmc_instance* /*unused*/) { return evmc_capabilities_flagset{EVMC_CAPABILITY_PRECOMPILES}; },
         nullptr,
         nullptr,
     };
