@@ -1,0 +1,77 @@
+---
+Checks: >
+  bugprone-*,
+  cert-*,
+  -cert-err58-cpp,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-static-cast-downcast,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-special-member-functions,
+  google-*,
+  -google-build-using-namespace,
+  -google-readability-avoid-underscore-in-googletest-name,
+  -google-readability-braces-around-statements,
+  -google-readability-todo,
+  -google-runtime-references,
+  hicpp-*,
+  -hicpp-avoid-c-arrays,
+  -hicpp-braces-around-statements,
+  -hicpp-no-array-decay,
+  -hicpp-no-malloc,
+  -hicpp-signed-bitwise,
+  -hicpp-special-member-functions,
+  -hicpp-vararg,
+  llvm-*,
+  misc-*,
+  -misc-non-private-member-variables-in-classes,
+  modernize-*,
+  -modernize-avoid-c-arrays,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-braces-around-statements,
+  -readability-magic-numbers,
+WarningsAsErrors: '*'
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     none
+User:            chfast
+CheckOptions:
+  - key:             cert-dcl16-c.NewSuffixes
+    value:           'L;LL;LU;LLU'
+  - key:             cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField
+    value:           '0'
+  - key:             cppcoreguidelines-explicit-virtual-functions.IgnoreDestructors
+    value:           '1'
+  - key:             cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value:           '1'
+  - key:             google-readability-braces-around-statements.ShortStatementLines
+    value:           '1'
+  - key:             google-readability-function-size.StatementThreshold
+    value:           '800'
+  - key:             google-readability-namespace-comments.ShortNamespaceLines
+    value:           '10'
+  - key:             google-readability-namespace-comments.SpacesBeforeComments
+    value:           '2'
+  - key:             modernize-loop-convert.MaxCopySize
+    value:           '16'
+  - key:             modernize-loop-convert.MinConfidence
+    value:           reasonable
+  - key:             modernize-loop-convert.NamingStyle
+    value:           CamelCase
+  - key:             modernize-pass-by-value.IncludeStyle
+    value:           llvm
+  - key:             modernize-replace-auto-ptr.IncludeStyle
+    value:           llvm
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+...
+
