@@ -237,8 +237,10 @@ TEST(cpp, result)
     {
         EXPECT_EQ(release_called, 0);
         auto raw_result = evmc_result{};
+        // NOLINTNEXTLINE(cppcoreguidelines-no-malloc)
         raw_result.output_data = static_cast<uint8_t*>(std::malloc(13));
         raw_result.release = [](const evmc_result* r) {
+            // NOLINTNEXTLINE(cppcoreguidelines-no-malloc, cppcoreguidelines-pro-type-const-cast)
             std::free(const_cast<uint8_t*>(r->output_data));
             ++release_called;
         };
@@ -248,11 +250,11 @@ TEST(cpp, result)
 
         EXPECT_EQ(release_called, 0);
 
-        [](evmc::result) {}(std::move(res2));
+        [](evmc::result /*unused*/) {}(std::move(res2));
 
         EXPECT_EQ(release_called, 1);
     }
-    EXPECT_EQ(release_called, 1);
+    EXPECT_EQ(release_called, 1);  // NOLINT(clang-analyzer-unix.Malloc)
 }
 
 TEST(cpp, vm)
@@ -277,7 +279,7 @@ TEST(cpp, vm_set_option)
 {
     evmc_instance raw_instance = {EVMC_ABI_VERSION, "",      "",      nullptr,
                                   nullptr,          nullptr, nullptr, nullptr};
-    raw_instance.destroy = [](evmc_instance*) {};
+    raw_instance.destroy = [](evmc_instance* /*unused*/) {};
 
     auto vm = evmc::vm{&raw_instance};
     EXPECT_EQ(vm.set_option("1", "2"), EVMC_SET_OPTION_INVALID_NAME);
@@ -293,9 +295,9 @@ TEST(cpp, vm_null)
 TEST(cpp, vm_move)
 {
     static int destroy_counter = 0;
-    const auto template_instance =
-        evmc_instance{EVMC_ABI_VERSION, "",      "",      [](evmc_instance*) { ++destroy_counter; },
-                      nullptr,          nullptr, nullptr, nullptr};
+    const auto template_instance = evmc_instance{
+        EVMC_ABI_VERSION, "",      "",      [](evmc_instance* /*unused*/) { ++destroy_counter; },
+        nullptr,          nullptr, nullptr, nullptr};
 
     EXPECT_EQ(destroy_counter, 0);
     {
@@ -405,7 +407,7 @@ TEST(cpp, result_raii)
 {
     static auto release_called = 0;
     release_called = 0;
-    auto release_fn = [](const evmc_result*) noexcept { ++release_called; };
+    auto release_fn = [](const evmc_result* /*unused*/) noexcept { ++release_called; };
 
     {
         auto raw_result = evmc_result{};
@@ -441,7 +443,7 @@ TEST(cpp, result_raii)
 TEST(cpp, result_move)
 {
     static auto release_called = 0;
-    auto release_fn = [](const evmc_result*) noexcept { ++release_called; };
+    auto release_fn = [](const evmc_result* /*unused*/) noexcept { ++release_called; };
 
     release_called = 0;
     {
