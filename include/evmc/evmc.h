@@ -662,11 +662,7 @@ struct evmc_host_interface
  * the context callback interface.
  * Optionally, the Host MAY include in the context additional data.
  */
-struct evmc_host_context
-{
-    /** The Host interface. */
-    const struct evmc_host_interface* host;
-};
+struct evmc_host_context;
 
 
 /* Forward declaration. */
@@ -802,6 +798,7 @@ enum evmc_revision
  * @return           The execution result.
  */
 typedef struct evmc_result (*evmc_execute_fn)(struct evmc_vm* vm,
+                                              const struct evmc_host_interface* host,
                                               struct evmc_host_context* context,
                                               enum evmc_revision rev,
                                               const struct evmc_message* msg,
