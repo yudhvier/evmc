@@ -335,6 +335,7 @@ fn build_execute_fn(names: &VMNameSet) -> proc_macro2::TokenStream {
     quote! {
         extern "C" fn __evmc_execute(
             instance: *mut ::evmc_vm::ffi::evmc_vm,
+            host: *const ::evmc_vm::ffi::evmc_host_interface,
             context: *mut ::evmc_vm::ffi::evmc_host_context,
             revision: ::evmc_vm::ffi::evmc_revision,
             msg: *const ::evmc_vm::ffi::evmc_message,
@@ -376,7 +377,7 @@ fn build_execute_fn(names: &VMNameSet) -> proc_macro2::TokenStream {
 
             let result = ::std::panic::catch_unwind(|| {
                 let mut execution_context = unsafe {
-                  ::evmc_vm::ExecutionContext::new(context.as_mut().expect("EVMC context is null"))
+                  ::evmc_vm::ExecutionContext::new(host, context.as_mut().expect("EVMC context is null"))
                 };
                 container.execute(revision, code_ref, &execution_message, &mut execution_context)
             });
