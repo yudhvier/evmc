@@ -236,11 +236,7 @@ func (vm *VM) Execute(ctx HostContext, rev Revision,
 	evmcSender := evmcAddress(sender)
 	evmcValue := evmcBytes32(value)
 	evmcCreate2Salt := evmcBytes32(create2Salt)
-<<<<<<< HEAD
-	result := C.execute_wrapper(vm.handle, C.int64_t(ctxId), uint32(rev),
-=======
-	result := C.execute_wrapper(instance.handle, C.uintptr_t(ctxId), uint32(rev),
->>>>>>> Update Go
+	result := C.execute_wrapper(vm.handle, C.uintptr_t(ctxId), uint32(rev),
 		C.enum_evmc_call_kind(kind), flags, C.int32_t(depth), C.int64_t(gas),
 		&evmcDestination, &evmcSender, bytesPtr(input), C.size_t(len(input)), &evmcValue,
 		bytesPtr(code), C.size_t(len(code)), &evmcCreate2Salt)
