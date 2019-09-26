@@ -9,8 +9,8 @@ use std::ops::Deref;
 
 /// Container struct for EVMC instances and user-defined data.
 pub struct EvmcContainer<T>
-where
-    T: EvmcVm + Sized,
+    where
+        T: EvmcVm + Sized,
 {
     #[allow(dead_code)]
     instance: ::evmc_sys::evmc_vm,
@@ -18,8 +18,8 @@ where
 }
 
 impl<T> EvmcContainer<T>
-where
-    T: EvmcVm + Sized,
+    where
+        T: EvmcVm + Sized,
 {
     /// Basic constructor.
     pub fn new(_instance: ::evmc_sys::evmc_vm) -> Box<Self> {
@@ -42,8 +42,8 @@ where
 }
 
 impl<T> Deref for EvmcContainer<T>
-where
-    T: EvmcVm,
+    where
+        T: EvmcVm,
 {
     type Target = T;
 
@@ -59,6 +59,7 @@ mod tests {
     use crate::{ExecutionContext, ExecutionMessage, ExecutionResult};
 
     struct TestVm {}
+
     impl EvmcVm for TestVm {
         fn init() -> Self {
             TestVm {}
@@ -131,9 +132,9 @@ mod tests {
             get_block_hash: None,
             emit_log: None,
         };
-        let mut backing_context = ::evmc_sys::evmc_host_context { host: &host };
+        let mut host_context = ::evmc_sys::evmc_host_context { _unused: [] };
 
-        let mut context = ExecutionContext::new(&mut backing_context);
+        let mut context = ExecutionContext::new(&host, &mut host_context);
         let container = EvmcContainer::<TestVm>::new(instance);
         assert_eq!(
             container
@@ -141,7 +142,7 @@ mod tests {
                     evmc_sys::evmc_revision::EVMC_PETERSBURG,
                     &code,
                     &message,
-                    &mut context
+                    &mut context,
                 )
                 .status_code(),
             ::evmc_sys::evmc_status_code::EVMC_FAILURE
@@ -149,7 +150,7 @@ mod tests {
 
         let ptr = unsafe { EvmcContainer::into_ffi_pointer(container) };
 
-        let mut context = ExecutionContext::new(&mut backing_context);
+        let mut context = ExecutionContext::new(&host, &mut host_context);
         let container = unsafe { EvmcContainer::<TestVm>::from_ffi_pointer(ptr) };
         assert_eq!(
             container
@@ -157,7 +158,7 @@ mod tests {
                     evmc_sys::evmc_revision::EVMC_PETERSBURG,
                     &code,
                     &message,
-                    &mut context
+                    &mut context,
                 )
                 .status_code(),
             ::evmc_sys::evmc_status_code::EVMC_FAILURE
