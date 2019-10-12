@@ -33,6 +33,7 @@ TEST(helpers, release_result)
 
     static evmc_result r2;
     static bool e;
+    static r1;
 
     e = false;
     r2 = evmc_result{};
